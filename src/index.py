@@ -17,11 +17,11 @@ async def webhook(request: Request):
     print('ICI', request)
 
     form_data = await request.form()
-    message_received = form_data.get('Body')
-    num_media = int(form_data.get('NumMedia', 0))
+    #message_received = form_data.get('Body')
+    #num_media = int(form_data.get('NumMedia', 0))
 
     response = MessagingResponse()
-    response.message("Hello, World!" + str(form_data) + str(num_media))
+    response.message("Hello, World!" + str(type(form_data)))
     return Response(content=str(response), media_type="application/xml")
 
     response = MessagingResponse()
