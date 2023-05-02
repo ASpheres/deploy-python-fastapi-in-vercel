@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import XMLResponse
+from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
 
 app = FastAPI()
@@ -41,7 +41,7 @@ async def webhook(request: Request):
             else:
                 print(f"Type de média non pris en charge : {media_type}")
 
-    return XMLResponse(content=str(response), media_type="application/xml")
+    return Response(content=str(response), media_type="application/xml")
 
 if __name__ == '__main__':
     import uvicorn
