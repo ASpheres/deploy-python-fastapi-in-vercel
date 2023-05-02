@@ -14,6 +14,7 @@ async def say_hello(name: str):
 
 @app.post('/webhook')
 async def webhook(request: Request):
+    print('ICI', request)
     form_data = await request.form()
     message_received = form_data.get('Body')
     num_media = int(form_data.get('NumMedia', 0))
