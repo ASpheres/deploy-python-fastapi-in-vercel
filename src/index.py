@@ -1,6 +1,17 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
+import requests
+import json
+
+url = "https://apps.beam.cloud/e928s"
+headers = {
+  "Accept": "*/*",
+  "Accept-Encoding": "gzip, deflate",
+  "Authorization": "Basic NjU1M2Y0MTQzZGI2ZTJiOGY5ZmI3ZmI4NDE5OThlMzE6ODZlOWFlYmZmNTFhOWRlMDdjOGEzNTk2NjljMmIzODY=",
+  "Connection": "keep-alive",
+  "Content-Type": "application/json"
+}
 
 app = FastAPI()
 
@@ -17,12 +28,8 @@ async def webhook(request: Request):
     print('ICI', request)
 
     form_data = await request.form()
-    #message_received = form_data.get('Body')
-    #num_media = int(form_data.get('NumMedia', 0))
-
-    response = MessagingResponse()
-    response.message("Hello, World!" + str(type(form_data)))
-    return Response(content=str(response), media_type="application/xml")
+    message_received = form_data.get('Body')
+    num_media = int(form_data.get('NumMedia', 0))
 
     response = MessagingResponse()
 
@@ -37,7 +44,17 @@ async def webhook(request: Request):
 
             if media_type.startswith("audio/"):
                 print(f"Audio reçu : {media_url}")
-                response.message("Vous avez envoyé un fichier audio.")
+                payload = {"url": f"{media_url}"}
+                response_beam = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+                print(response_beam.content)
+                # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+                response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+                #print(response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+                if 'pred' in response_data:
+                    print(response_data['pred'])
+                    response.message(f"{response_data['pred']}")
+                else:
+                    response.message("")
             elif media_type.startswith("image/"):
                 print(f"Image reçue : {media_url}")
                 response.message("Vous avez envoyé une image.")
