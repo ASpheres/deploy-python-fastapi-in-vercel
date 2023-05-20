@@ -45,7 +45,7 @@ def answer_call():
     #gather.say('Please enter the 4 digit code on your screen to get started.')
     #response.append(gather)
     print(3)
-    response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
+    #response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
     response.say("Hello world. Bonjour, bienvenue Benjamin.", voice='alice')
     print(4)
     #response.play('https://demo.twilio.com/docs/classic.mp3')
@@ -61,6 +61,7 @@ def answer_call():
     #response.hangup()
     print(8)
     # Créer une instance de `Response` avec le type de contenu correct
+    print(str(response))
     xml_response = Response(content=str(response), media_type="application/xml")
     print(xml_response)
     return xml_response
