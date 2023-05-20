@@ -70,11 +70,16 @@ def record():
 
 @app.websocket("/stream")
 async def websocket_endpoint(websocket: WebSocket):
+    print(11)
     await websocket.accept()
+    print(12)
     while True:
+        print(13)
         data = await websocket.receive_json()
         stream_data = StreamData(**data)
+        print(14)
         if stream_data.media:
+            print(15)
             audio_data = base64.b64decode(stream_data.media['payload'])
             print(type(audio_data))
             # Maintenant, `audio_data` contient l'audio brut que vous pouvez passer à votre fonction de transcription
