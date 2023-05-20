@@ -49,12 +49,12 @@ def answer_call():
     print(4)
     #response.play('https://demo.twilio.com/docs/classic.mp3')
     print(5)
-    # Use <Record> to record the caller's message
-    response.record()
-    print(6)
     start = Start()
     start.stream(url='wss://apis-as-phere-s-team.vercel.app/stream')
     response.append(start)
+    print(6)
+    # Use <Record> to record the caller's message
+    #response.record()
     print(7)
     # End the call with <Hangup>
     #response.hangup()
