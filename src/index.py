@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
-from twilio.twiml.voice_response import VoiceResponse, Start, Stream, Gather
+from twilio.twiml.voice_response import VoiceResponse, Start, Connect, Stream, Gather
 import requests
 import json
 import base64
@@ -50,7 +50,7 @@ def answer_call():
     print(4)
     #response.play('https://demo.twilio.com/docs/classic.mp3')
     print(5)
-    start = Start()
+    start = Connect()#Start()
     start.stream(url=url_webhook)
     response.append(start)
     print(6)
