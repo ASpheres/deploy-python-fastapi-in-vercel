@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
-from twilio.twiml.voice_response import VoiceResponse, Start, Stream
+from twilio.twiml.voice_response import VoiceResponse, Start, Stream, Gather
 import requests
 import json
 import base64
@@ -42,8 +42,12 @@ def answer_call():
     start = Start()
     start.stream(url='wss://apis-as-phere-s-team.vercel.app/stream')
     print(2)
-    response.append(start)
+    #response.append(start)
     print(3)
+    gather = Gather(input='dtmf', num_digits=4)
+    gather.say('Please enter the 4 digit code on your screen to get started.')
+    response.append(gather)
+    print(31)
     response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
     print(4)
     response.play('https://demo.twilio.com/docs/classic.mp3')
@@ -54,6 +58,7 @@ def answer_call():
     # End the call with <Hangup>
     response.hangup()
     print(7)
+    print(response)
     return str(response)
 
 @app.get("/webhook/voice")
