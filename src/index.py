@@ -50,7 +50,7 @@ class StreamData(BaseModel):
     media: dict = None
 
 @app.post("/webhook/voice")
-async def answer_call():
+async def answer_call(request: Request):
     form_data = await request.form()
     call_sid = form_data.get('CallSid')
     print(call_sid)
