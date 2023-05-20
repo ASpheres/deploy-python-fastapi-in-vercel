@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
+from twilio.twiml.voice_response import VoiceResponse, Start, Stream
 import requests
 import json
 import base64
+from pydantic import BaseModel
 
 url = "https://apps.beam.cloud/e928s"
 headers = {
@@ -28,17 +30,40 @@ async def say_hello(name: str):
 async def webhook(request: Request):
     print('ICI', request)
 
+class StreamData(BaseModel):
+    event: str
+    start: dict = None
+    media: dict = None
+
+@app.post("/webhook/voice")
+def answer_call():
+    response = VoiceResponse()
+    start = Start()
+    start.stream(url='wss://apis-as-phere-s-team.vercel.app/stream')
+    response.append(start)
+    response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.")
+    return str(response)
+
 @app.websocket("/stream")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
+        data = await websocket.receive_json()
+        stream_data = StreamData(**data)
+        if stream_data.media:
+            audio_data = base64.b64decode(stream_data.media['payload'])
+            print(type(audio_data))
+            # Maintenant, `audio_data` contient l'audio brut que vous pouvez passer à votre fonction de transcription
+            # transcription = your_transcription_function(audio_data)
+            # TODO: Générer une réponse vocale en temps réel (ceci n'est pas pris en charge par Twilio au moment de l'écriture)
+
+'''
         data = await websocket.receive_text()
         data = json.loads(data)
         if 'payload' in data:
             audio_data = base64.b64decode(data['payload'])
             print(type(audio_data))
-            # Maintenant, `audio_data` contient l'audio brut que vous pouvez passer à votre fonction de transcription
-            # transcription = your_transcription_function(audio_data)
+'''
 
 @app.post('/webhook/whatsapp')
 async def webhook(request: Request):
