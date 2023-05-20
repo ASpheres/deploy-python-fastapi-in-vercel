@@ -6,6 +6,8 @@ import requests
 import json
 import base64
 from pydantic import BaseModel
+import boto3
+from botocore.exceptions import NoCredentialsError
 
 url_api = "https://apps.beam.cloud/e928s"
 url_webhook = "wss://twilio-asphere.herokuapp.com"
@@ -16,6 +18,17 @@ headers = {
   "Connection": "keep-alive",
   "Content-Type": "application/json"
 }
+
+# AWS Credentials - Ils doivent être stockés de manière sécurisée
+aws_access_key_id = 'your_access_key_id'
+aws_secret_access_key = 'your_secret_access_key'
+aws_session_token = 'your_session_token'  # facultatif
+s3_client = boto3.client('s3')#,
+                         #aws_access_key_id=aws_access_key_id,
+                         #aws_secret_access_key=aws_secret_access_key,
+                         #aws_session_token=aws_session_token)
+bucket_name = 'api-beam'
+parent_folder = 'twilio'
 
 app = FastAPI()
 
@@ -37,29 +50,27 @@ class StreamData(BaseModel):
     media: dict = None
 
 @app.post("/webhook/voice")
-def answer_call():
-    print(1)
+async def answer_call():
+    form_data = await request.form()
+    call_sid = form_data.get('CallSid')
+    print(call_sid)
+    # Créer un dossier dans S3
+    folder_name = f"{parent_folder}/{call_sid}/"
+    s3_client.put_object(Bucket=bucket_name, Key=(folder_name))
     response = VoiceResponse()
-    print(2)
     #gather = Gather(input='dtmf', num_digits=4)
     #gather.say('Please enter the 4 digit code on your screen to get started.')
     #response.append(gather)
-    print(3)
     #response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
     response.say("Hello world. Bonjour, bienvenue Benjamin.", voice='alice')
-    print(4)
     #response.play('https://demo.twilio.com/docs/classic.mp3')
-    print(5)
     start = Connect()#Start()
     start.stream(url=url_webhook)
     response.append(start)
-    print(6)
     # Use <Record> to record the caller's message
     #response.record()
-    print(7)
     # End the call with <Hangup>
     #response.hangup()
-    print(8)
     # Créer une instance de `Response` avec le type de contenu correct
     print(str(response))
     xml_response = Response(content=str(response), media_type="application/xml")
