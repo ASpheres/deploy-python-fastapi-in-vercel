@@ -37,11 +37,15 @@ class StreamData(BaseModel):
 
 @app.post("/webhook/voice")
 def answer_call():
+    print(1)
     response = VoiceResponse()
     start = Start()
     start.stream(url='wss://apis-as-phere-s-team.vercel.app/stream')
+    print(2)
     response.append(start)
+    print(3)
     response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.")
+    print(4)
     return str(response)
 
 @app.websocket("/stream")
