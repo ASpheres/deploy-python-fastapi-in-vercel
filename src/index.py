@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
 import requests
 import json
+import base64
 
 url = "https://apps.beam.cloud/e928s"
 headers = {
@@ -23,7 +24,23 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-@app.post('/webhook')
+@app.post('/webhook/call')
+async def webhook(request: Request):
+    print('ICI', request)
+
+@app.websocket("/stream")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        data = json.loads(data)
+        if 'payload' in data:
+            audio_data = base64.b64decode(data['payload'])
+            print(type(audio_data))
+            # Maintenant, `audio_data` contient l'audio brut que vous pouvez passer à votre fonction de transcription
+            # transcription = your_transcription_function(audio_data)
+
+@app.post('/webhook/whatsapp')
 async def webhook(request: Request):
     print('ICI', request)
 
