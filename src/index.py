@@ -44,8 +44,10 @@ def answer_call():
     print(2)
     response.append(start)
     print(3)
-    response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.")
+    response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
     print(4)
+    resp.play('https://demo.twilio.com/docs/classic.mp3')
+    print(5)
     return str(response)
 
 @app.websocket("/stream")
