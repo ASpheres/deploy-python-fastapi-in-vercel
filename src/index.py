@@ -20,12 +20,12 @@ headers = {
 }
 
 # AWS Credentials - Ils doivent être stockés de manière sécurisée
-aws_access_key_id = 'your_access_key_id'
-aws_secret_access_key = 'your_secret_access_key'
-aws_session_token = 'your_session_token'  # facultatif
-s3_client = boto3.client('s3')#,
-                         #aws_access_key_id=aws_access_key_id,
-                         #aws_secret_access_key=aws_secret_access_key,
+aws_access_key_id = 'AKIA5ZNQFWXGBYOQAJNX'
+aws_secret_access_key = 'dy6aw3RAqXmbuZD9yB2YVPjKmL/VTU/ExSeCehF4'
+#aws_session_token = 'your_session_token'  # facultatif
+s3_client = boto3.client('s3',
+                         aws_access_key_id=aws_access_key_id,
+                         aws_secret_access_key=aws_secret_access_key)#,
                          #aws_session_token=aws_session_token)
 bucket_name = 'api-beam'
 parent_folder = 'twilio'
