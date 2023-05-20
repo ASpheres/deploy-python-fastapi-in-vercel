@@ -48,7 +48,17 @@ def answer_call():
     print(4)
     response.play('https://demo.twilio.com/docs/classic.mp3')
     print(5)
+    # Use <Record> to record the caller's message
+    response.record()
+    print(6)
+    # End the call with <Hangup>
+    response.hangup()
+    print(7)
     return str(response)
+
+@app.get("/webhook/voice")
+def record():
+    answer_call()
 
 @app.websocket("/stream")
 async def websocket_endpoint(websocket: WebSocket):
