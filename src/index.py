@@ -59,8 +59,10 @@ def answer_call():
     # End the call with <Hangup>
     #response.hangup()
     print(7)
-    print(response)
-    return str(response)
+    # Créer une instance de `Response` avec le type de contenu correct
+    xml_response = Response(content=str(response), media_type="application/xml")
+    print(xml_response)
+    return xml_response
 
 @app.get("/webhook/voice")
 def record():
