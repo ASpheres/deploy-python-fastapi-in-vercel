@@ -47,7 +47,7 @@ def answer_call():
     response.say("Bienvenue, je suis en train d'écouter et de transcrire ce que vous dites.", voice='alice')
     response.say("Hello world. Bonjour, bienvenue Benjamin.", voice='alice')
     print(4)
-    response.play('https://demo.twilio.com/docs/classic.mp3')
+    #response.play('https://demo.twilio.com/docs/classic.mp3')
     print(5)
     # Use <Record> to record the caller's message
     response.record()
