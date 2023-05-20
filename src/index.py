@@ -7,7 +7,8 @@ import json
 import base64
 from pydantic import BaseModel
 
-url = "https://apps.beam.cloud/e928s"
+url_api = "https://apps.beam.cloud/e928s"
+url_webhook = "wss://twilio-asphere.herokuapp.com"
 headers = {
   "Accept": "*/*",
   "Accept-Encoding": "gzip, deflate",
@@ -50,7 +51,7 @@ def answer_call():
     #response.play('https://demo.twilio.com/docs/classic.mp3')
     print(5)
     start = Start()
-    start.stream(url='wss://apis-as-phere-s-team.vercel.app/stream')
+    start.stream(url=url_webhook)
     response.append(start)
     print(6)
     # Use <Record> to record the caller's message
@@ -116,7 +117,7 @@ async def webhook(request: Request):
             if media_type.startswith("audio/"):
                 print(f"Audio reçu : {media_url}")
                 payload = {"url": f"{media_url}"}
-                response_beam = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+                response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
                 print(response_beam.content)
                 # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
                 response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
