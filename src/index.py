@@ -203,7 +203,6 @@ async def webhook(request: Request):
             else:
                 print(f"Type de média non pris en charge : {media_type}")
                 response.message("Type de média non pris en charge.")
-    
         if len(images) > 0:
             payload = {'image': 1, "urls": [f"{media_url}"]}
             response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
@@ -218,7 +217,6 @@ async def webhook(request: Request):
             # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
             response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
             print('Réponse API videos', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
-    
     return Response(content=str(response), media_type="application/xml")
 
 if __name__ == '__main__':
