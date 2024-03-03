@@ -135,6 +135,10 @@ async def webhook(request: Request):
                 msg.body(f"{response_data['output']}")
             if 'audio' in response_data:
                 msg.media(response_data['url'])
+            if 'image' in response_data:
+                msg.media(response_data['url'])
+            if 'video' in response_data:
+                msg.media(response_data['url'])
     if message_received:
         print(f"Message reçu : {message_received}")
         payload = {'user_id': sender_number, "prompt": f"{message_received}"}
