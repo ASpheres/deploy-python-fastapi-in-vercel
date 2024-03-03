@@ -106,48 +106,105 @@ async def websocket_endpoint(websocket: WebSocket):
             audio_data = base64.b64decode(data['payload'])
             print(type(audio_data))
 '''
+            
+            if media_type.startswith("audio/"):
+                msg.body("Voici l'audio que vous avez envoyé :")
+                msg.media(media_url)
+            elif media_type.startswith("image/"):
+                msg.body("Voici l'image que vous avez envoyée :")
+                msg.media(media_url)
+            elif media_type.startswith("video/"):
+                msg.body("Voici la vidéo que vous avez envoyée :")
+                msg.media(media_url)
+            else:
+                response.message("Type de média non pris en charge.")
+
+    return Response(content=str(response), media_type="application/xml")
 
 @app.post('/webhook/whatsapp')
 async def webhook(request: Request):
     print('ICI', request)
 
     form_data = await request.form()
+    sender_number = form_data.get('From')  # Récupère le numéro de téléphone de l'expéditeur
     message_received = form_data.get('Body')
     num_media = int(form_data.get('NumMedia', 0))
 
     response = MessagingResponse()
 
+    # Créer un message avec un média attaché
+    msg = response.message()
     if message_received:
         print(f"Message reçu : {message_received}")
-        response.message("Hello, World!")
+        payload = {'user_id': sender_number, "prompt": f"{message_received}"}
+        response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+        print('Réponse API', response_beam.content)
+        # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+        response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+        #print(response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+        if 'text' in response_data:
+            print('Réponse API text', response_data['output'])
+            msg.body(f"{response_data['output']}")
+        if 'image' in response_data:
+            msg.media(response_data['url'])
+        if 'video' in response_data:
+            msg.media(response_data['url'])
+        if 'audio' in response_data:
+            msg.media(response_data['url'])
+        #response.message("Hello, World!")
 
     if num_media > 0:
+        images = []
+        videos = []
         for i in range(num_media):
             media_url = form_data.get(f'MediaUrl{i}')
             media_type = form_data.get(f'MediaContentType{i}')
 
             if media_type.startswith("audio/"):
                 print(f"Audio reçu : {media_url}")
-                payload = {"url": f"{media_url}"}
+                payload = {'audio': 1, "urls": [f"{media_url}"]}
                 response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
                 print(response_beam.content)
                 # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
                 response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
                 #print(response_data)  # Accédez à l'attribut 'pred' du dictionnaire
-                if 'pred' in response_data:
-                    print(response_data['pred'])
-                    response.message(f"{response_data['pred']}")
-                else:
-                    response.message("")
+                if 'text' in response_data:
+                    print('Réponse API text', response_data['output'])
+                    msg.body(f"{response_data['output']}")
+                if 'image' in response_data:
+                    msg.media(response_data['url'])
+                if 'video' in response_data:
+                    msg.media(response_data['url'])
+                if 'audio' in response_data:
+                    msg.media(response_data['url'])
+                #else:
+                    #response.message("")
             elif media_type.startswith("image/"):
                 print(f"Image reçue : {media_url}")
-                response.message("Vous avez envoyé une image.")
+                images.append(media_url)
+                #response.message("Vous avez envoyé une image.")
             elif media_type.startswith("video/"):
                 print(f"Vidéo reçue : {media_url}")
-                response.message("Vous avez envoyé une vidéo.")
+                videos.append(media_url)
+                #response.message("Vous avez envoyé une vidéo.")
             else:
                 print(f"Type de média non pris en charge : {media_type}")
-
+    
+    if len(images) > 0:
+        payload = {'image': 1, "urls": [f"{media_url}"]}
+        response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+        print(response_beam.content)
+        # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+        response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+        print('Réponse API images', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+    if len(videos) > 0:
+        payload = {'video': 1, "urls": [f"{media_url}"]}
+        response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+        print(response_beam.content)
+        # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+        response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+        print('Réponse API videos', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+    
     return Response(content=str(response), media_type="application/xml")
 
 if __name__ == '__main__':
