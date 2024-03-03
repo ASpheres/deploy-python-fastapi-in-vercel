@@ -107,20 +107,6 @@ async def websocket_endpoint(websocket: WebSocket):
             audio_data = base64.b64decode(data['payload'])
             print(type(audio_data))
 '''
-            
-            if media_type.startswith("audio/"):
-                msg.body("Voici l'audio que vous avez envoyé :")
-                msg.media(media_url)
-            elif media_type.startswith("image/"):
-                msg.body("Voici l'image que vous avez envoyée :")
-                msg.media(media_url)
-            elif media_type.startswith("video/"):
-                msg.body("Voici la vidéo que vous avez envoyée :")
-                msg.media(media_url)
-            else:
-                response.message("Type de média non pris en charge.")
-
-    return Response(content=str(response), media_type="application/xml")
 
 @app.post('/webhook/whatsapp')
 async def webhook(request: Request):
@@ -190,6 +176,7 @@ async def webhook(request: Request):
                 #response.message("Vous avez envoyé une vidéo.")
             else:
                 print(f"Type de média non pris en charge : {media_type}")
+                response.message("Type de média non pris en charge.")
     
     if len(images) > 0:
         payload = {'image': 1, "urls": [f"{media_url}"]}
