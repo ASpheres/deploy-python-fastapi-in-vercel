@@ -9,7 +9,8 @@ from pydantic import BaseModel
 import boto3
 from botocore.exceptions import NoCredentialsError
 
-url_api = "https://apps.beam.cloud/e928s"
+#url_api = "https://apps.beam.cloud/e928s"
+url_api = "https://fjoie.apps.beam.cloud"
 url_webhook = "wss://incubo.serveo.net" #"wss://twilio-asphere.herokuapp.com"
 headers = {
   "Accept": "*/*",
