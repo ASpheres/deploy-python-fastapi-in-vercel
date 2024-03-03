@@ -143,10 +143,10 @@ async def webhook(request: Request):
         print(f"Message reçu : {message_received}")
         payload = {'user_id': sender_number, "prompt": f"{message_received}"}
         if message_received.lower() == 'acc':
-            'has_spent': True
+            has_spent = True
         if message_received.lower() == 'ref':
-            'has_spent': False
-        payload['has_spent'] = 'has_spent'
+            has_spent = False
+        payload['has_spent'] = has_spent
         response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
         print('Réponse API', response_beam.content)
         # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
