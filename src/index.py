@@ -121,6 +121,20 @@ async def webhook(request: Request):
 
     # Créer un message avec un média attaché
     msg = response.message()
+    if message_received and num_media > 0:
+        if media_type.startswith("audio/"):
+            print(f"Audio reçu : {media_url}")
+            payload = {'cloning': 1, "speaker_wav_url": f"{media_url}", "text": f"{message_received}"}
+            response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+            print(response_beam.content)
+            # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+            response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+            #print(response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+            if 'text' in response_data:
+                print('Réponse API text', response_data['output'])
+                msg.body(f"{response_data['output']}")
+            if 'audio' in response_data:
+                msg.media(response_data['url'])
     if message_received:
         print(f"Message reçu : {message_received}")
         payload = {'user_id': sender_number, "prompt": f"{message_received}"}
