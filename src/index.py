@@ -147,7 +147,7 @@ async def webhook(request: Request):
         if message_received.lower() == 'ref':
             payload['has_spent'] = False
         response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
-        print('Réponse API', response_beam.content)
+        #print('Réponse API', response_beam.content)
         # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
         response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
         #print(response_data)  # Accédez à l'attribut 'pred' du dictionnaire
@@ -204,20 +204,20 @@ async def webhook(request: Request):
                 print(f"Type de média non pris en charge : {media_type}")
                 response.message("Type de média non pris en charge.")
     
-    if len(images) > 0:
-        payload = {'image': 1, "urls": [f"{media_url}"]}
-        response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
-        print(response_beam.content)
-        # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
-        response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
-        print('Réponse API images', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
-    if len(videos) > 0:
-        payload = {'video': 1, "urls": [f"{media_url}"]}
-        response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
-        print(response_beam.content)
-        # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
-        response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
-        print('Réponse API videos', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+        if len(images) > 0:
+            payload = {'image': 1, "urls": [f"{media_url}"]}
+            response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+            print(response_beam.content)
+            # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+            response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+            print('Réponse API images', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
+        if len(videos) > 0:
+            payload = {'video': 1, "urls": [f"{media_url}"]}
+            response_beam = requests.request("POST", url_api, headers=headers, data=json.dumps(payload))
+            print(response_beam.content)
+            # Supposons que 'response_beam' est un objet 'Response' de la bibliothèque 'requests'
+            response_data = json.loads(response_beam.content)  # Convertissez le contenu JSON en dictionnaire Python
+            print('Réponse API videos', response_data)  # Accédez à l'attribut 'pred' du dictionnaire
     
     return Response(content=str(response), media_type="application/xml")
 
