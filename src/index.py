@@ -116,6 +116,7 @@ async def webhook(request: Request):
     sender_number = form_data.get('From')  # Récupère le numéro de téléphone de l'expéditeur
     message_received = form_data.get('Body')
     num_media = int(form_data.get('NumMedia', 0))
+    print('num_media', num_media)
 
     response = MessagingResponse()
 
@@ -161,7 +162,6 @@ async def webhook(request: Request):
         if 'audio' in response_data:
             msg.media(response_data['url'])
         #response.message("Hello, World!")
-
     if num_media > 0:
         images = []
         videos = []
